@@ -1,0 +1,239 @@
+openapi: '3.0.2'
+info:
+  title: DEMO APIs
+  version: '1.0'
+servers:
+  - url: https://api.server.test/v1
+
+components:
+  securitySchemes:
+    bearerAuth:
+      description: '#### Example: Bearer [TOKEN]'
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /auth/login:
+    post:
+      summary: Login service
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: demotest1@gmail.com
+                password:
+                  type: string
+                  minLength: 8
+                  example: password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: OK
+
+  /auth/register:
+    post:
+      summary: Register service
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  example: lorem
+                lastName:
+                  type: string
+                  example: ipsum
+                email:
+                  type: string
+                  format: email
+                  example: demotest1@gmail.com
+                password:
+                  type: string
+                  minLength: 8
+                  example: password
+                confirmPassword:
+                  description: This field should equals to `password`
+                  type: string
+                  minLength: 8
+                  example: password
+              required:
+                - email
+                - firstName
+                - lastName
+                - password
+                - confirmPassword
+
+      responses:
+        '200':
+          description: OK
+
+  /users/get-profile:
+    get:
+      description: Get user details
+      summary: Get user details
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /auth/change-password:
+    post:
+      description: Change password
+      summary: Change password
+      tags:
+        - Password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  minLength: 8
+                  example: password
+                password:
+                  type: string
+                  minLength: 8
+                  example: newpassword
+                confirmPassword:
+                  description: This field should equals to `password`
+                  type: string
+                  minLength: 8
+                  example: newpassword
+              required:
+                - oldPassword
+                - password
+                - confirmPassword
+
+      responses:
+        '200':
+          description: OK
+
+  /forgot-password:
+    post:
+      description: Forgot password
+      summary: Forgot password
+      tags:
+        - Password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: demotest1@gmail.com
+              required:
+                - email
+
+      responses:
+        '200':
+          description: OK
+
+  /forgot-password/verify-otp:
+      post:
+        summary: Forgot Password verify otp Service
+        tags:
+          - Password
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: demotest1@gmail.com
+                  otp:
+                    type: integer
+                    example: 123456
+                required:
+                  - email
+                  - otp
+        responses:
+          '200':
+            description: OK
+
+  /forgot-password/new-password:
+      post:
+        summary: create new password service on forgot password 
+        tags:
+          - Password
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: demotest1@gmail.com
+                  password:
+                    type: string
+                    minLength: 8
+                    example: newpassword
+                  confirmPassword:
+                    description: This field should equals to `password`
+                    type: string
+                    minLength: 8
+                    example: newpassword
+                required:
+                  - password
+        responses:
+          '200':
+            description: OK
+
+  /users/update-profile:
+    put:
+      description: Update user profile picture 
+      summary: Update user profile picture 
+      tags: 
+        - Profile picture
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profilePicture:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+
